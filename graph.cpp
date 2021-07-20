@@ -11,12 +11,14 @@ Graph::Graph() {}
 Graph::Graph(bool directed) { this->directed = directed; }
 
 ///Copy Constructor
-Graph::Graph(const Graph& original) {
+Graph::Graph(const Graph& original) 
+{
   //Copy over boolean's
   directed = original.directed;
 
   //Add all nodes in original to new Graph
-  for (auto iter : original.nodeMap) {
+  for (auto iter : original.nodeMap) 
+  {
     int data = iter.second->getData();
     std::string name = iter.first;
 
@@ -26,7 +28,8 @@ Graph::Graph(const Graph& original) {
 
   //Add all edges in original to new Graph
   std::vector< std::tuple<std::string, std::string, double> > edgeVec = original.getEdges();
-  for (auto edge : edgeVec) {
+  for (auto edge : edgeVec) 
+  {
     std::string nodeA = std::get<0>(edge);
     std::string nodeB = std::get<1>(edge);
     double weight = std::get<2>(edge);
@@ -36,7 +39,8 @@ Graph::Graph(const Graph& original) {
 }
 
 ///Construct from File - When calling need to cast to string ie Graph G(string("file.txt"));
-Graph::Graph(std::string inputFileName) {
+Graph::Graph(std::string inputFileName)
+{
   //Open .txt file
   std::ifstream file (inputFileName);
   char specialChar = '%';
@@ -61,7 +65,8 @@ Graph::Graph(std::string inputFileName) {
 
   //Read Nodes
   getline (file, line);
-  while (line[0] != specialChar) {
+  while (line[0] != specialChar) 
+  {
     //Split up Node name and Node data using the separator character
     std::string nodeName = line.substr(0, line.find(separator));
     std::string dataString = line.substr(line.find(separator)+1);
@@ -74,7 +79,8 @@ Graph::Graph(std::string inputFileName) {
 
   //Read Edges
   if (line != specialChar + std::string("EDGES (Do not edit this line):")) { return; } //Corrupt File
-  while (getline (file, line)) {
+  while (getline (file, line)) 
+  {
     //Split up Edge into sourceNode, targetNode, and weight
     std::string sourceNode = line.substr(0, line.find(separator));
     line = line.substr(line.find(separator)+1);
@@ -93,7 +99,8 @@ Graph::~Graph() {
   for (auto iter : nodeMap) { delete iter.second; }
 }
 
-bool Graph::addNode(double data, std::string name) {
+bool Graph::addNode(double data, std::string name) 
+{
   //If node already exists, return false
   if (nodeMap.find(name) != nodeMap.end()) { return false; }
 
@@ -104,25 +111,31 @@ bool Graph::addNode(double data, std::string name) {
   return true;
 }
 
-bool Graph::addNode(std::string name) {
+bool Graph::addNode(std::string name) 
+{
   return addNode(1, name);
 }
 
 ///Given a vector of strings, insert each string as a Node
-void Graph::addNodes(std::vector<std::string> nodes) {
-  for (auto node : nodes) {
+void Graph::addNodes(std::vector<std::string> nodes) 
+{
+  for (auto node : nodes) 
+  {
     addNode(node);
   }
 }
 
 ///Given a vector of (double, string) pairs, insert each pair as a Node
-void Graph::addNodes(std::vector<std::pair<double, std::string>> nodes) {
-  for (auto nodePair : nodes) {
+void Graph::addNodes(std::vector<std::pair<double, std::string>> nodes) 
+{
+  for (auto nodePair : nodes) 
+  {
     addNode(nodePair.first, nodePair.second);
   }
 }
 
-bool Graph::addEdge(std::string fromNode, std::string toNode, double weight) {
+bool Graph::addEdge(std::string fromNode, std::string toNode, double weight) 
+{
   //If one of the nodes don't exist, return false
   if (nodeMap.find(fromNode) == nodeMap.end()) { return false; }
   if (nodeMap.find(toNode) == nodeMap.end()) { return false; }
@@ -141,16 +154,19 @@ bool Graph::addEdge(std::string fromNode, std::string toNode, double weight) {
 }
 
 ///Default edge weight is 1
-bool Graph::addEdge(std::string fromNode, std::string toNode) {
+bool Graph::addEdge(std::string fromNode, std::string toNode) 
+{
   return addEdge(fromNode, toNode, 1);
 }
 
 ///Add Edge using a 3-tuple (nodeA,nodeB,weight)
-bool Graph::addEdge(std::tuple<std::string, std::string, double> edge) {
+bool Graph::addEdge(std::tuple<std::string, std::string, double> edge) 
+{
   return addEdge(std::get<0>(edge), std::get<1>(edge), std::get<2>(edge));
 }
 
-bool Graph::deleteNode(std::string targetNode) {
+bool Graph::deleteNode(std::string targetNode) 
+{
   //If node does not exist, return false
   if (nodeMap.find(targetNode) == nodeMap.end()) { return false; }
 
@@ -162,7 +178,8 @@ bool Graph::deleteNode(std::string targetNode) {
   }
 
   //Remove targetNode from it's neighbors "getSetRef()"
-  for (auto iter : *(nodeMap[targetNode]->getMapPtr())) {
+  for (auto iter : *(nodeMap[targetNode]->getMapPtr())) 
+  {
     nodeMap[iter.first]->getSetRef().erase(targetNode);
   }
 
@@ -172,7 +189,8 @@ bool Graph::deleteNode(std::string targetNode) {
   return true;
 }
 
-bool Graph::deleteEdge(std::string fromNode, std::string toNode, double weight) {
+bool Graph::deleteEdge(std::string fromNode, std::string toNode, double weight) 
+{
   //If one of the nodes don't exist or no such edge exists, return false
   if (nodeMap.find(fromNode) == nodeMap.end()) { return false; }
   if (nodeMap.find(toNode) == nodeMap.end()) { return false; }
